@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Doctor Panel - {{opd}}</title>
+<style>
+* {margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI', Arial, sans-serif;}
+body {background:#f0f2f5; padding:15px;}
+.header {background:linear-gradient(135deg, #667eea 0%, #764ba2 100%); color:white; padding:20px; border-radius:15px; margin-bottom:20px; text-align:center;}
+.header h1 {font-size:24px; margin-bottom:5px;}
+.header p {opacity:0.9; font-size:14px;}
+.top-stats {display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; margin-bottom:20px;}
+.stat-box {background:white; padding:15px; border-radius:12px; text-align:center; box-shadow:0 2px 8px rgba(0,0,0,0.1);}
+.stat-box h3 {font-size:28px; color:#667eea; margin-bottom:5px;}
+.stat-box p {font-size:12px; color:#666;}
+.warning-box {background:#fff3cd; border:2px solid #ff9800; padding:12px; border-radius:10px; margin-bottom:15px; text-align:center; font-weight:600; color:#856404;}
+.current-box {background:white; border-radius:15px; padding:25px; margin-bottom:20px; box-shadow:0 4px 15px rgba(0,0,0,0.1); border:3px solid #28a745;}
+.current-box h2 {color:#28a745; text-align:center; margin-bottom:15px; font-size:20px;}
+.current-patient {text-align:center; padding:20px; background:#d4edda; border-radius:12px; margin-bottom:15px;}
+.current-patient h3 {font-size:32px; color:#155724; margin-bottom:8px;}
+.current-patient p {font-size:16px; color:#155724; margin:5px 0;}
+.no-patient {text-align:center; padding:30px; color:#999;}
+.btn {width:100%; padding:16px; border:none; border-radius:10px; font-size:18px; font-weight:bold; cursor:pointer; margin:8px 0; transition:0.3s;}
+.btn-green {background:linear-gradient(135deg, #28a745 0%, #20c997 100%); color:white;}
+.btn-orange {background:linear-gradient(135deg, #ff9800 0%, #ff5722 100%); color:white;}
+.btn-red {background:linear-gradient(135deg, #dc3545 0%, #c82333 100%); color:white;}
+.btn-gray {background:#6c757d; color:white;}
+.btn:hover {transform:translateY(-2px); box-shadow:0 8px 20px rgba(0,0,0,0.2);}
+.section {background:white; border-radius:15px; padding:20px; margin-bottom:15px; box-shadow:0 2px 10px rgba(0,0,0,0.08);}
+.section h3 {color:#333; margin-bottom:15px; font-size:18px; border-bottom:2px solid #667eea; padding-bottom:8px;}
+.patient-card {background:#f8f9fa; padding:12px; border-radius:8px; margin-bottom:8px; border-left:4px solid #667eea;}
+.patient-card p {margin:4px 0; font-size:14px;}
+.patient-card.name {font-weight:bold; color:#333; font-size:15px;}
+.patient-card.meta {color:#666; font-size:12px;}
+.missed-card {border-left-color:#dc3545; background:#fff5f5;}
+.logout {text-align:center; margin-top:20px;}
+.logout a {color:#dc3545; text-decoration:none; font-weight:600; font-size:14px;}
+@media print {.btn,.logout {display:none;}}
+</style>
+</head>
+<body>
+
+<div class="header">
+<h1>🏥 Doctor Panel</h1>
+<p>{{opd}}</p>
+</div>
+
+<!-- 5 PATIENT WARNING -->
+{% if completed_count >= 5 %}
+<div class="warning-box">
+⚠️ Aapne aaj {{completed_count}} patient complete kar liye. Break le lo!
+</div>
+{% endif %}
+
+<!-- TOP STATS -->
+<div class="top-stats">
+<div class="stat-box">
+<h3>{{completed_count}}</h3>
+<p>Aaj Complete</p>
+</div>
+<div class="stat-box">
+<h3>{{waiting|length}}</h3>
+<p>Waiting</p>
+</div>
+<div class="stat-box">
+<h3 style="color:#dc3545">{{missed_count}}</h3>
+<p>Missed</p>
+</div>
+</div>
+
+<!-- CURRENT PATIENT -->
+<div class="current-box">
+<h2>📢 Current Patient</h2>
+{% if current %}
+<div class="current-patient">
+<h3>Token #{{current[0]}}</h3>
+<p><b>{{current[4]}}</b></p>
+<p>{{current[3]}} - {{current[5]}}</p>
+<p style="font-size:12px; margin-top:10px;">Called: {{current[11].split('.')[0] if current[11] else ''}}</p>
+</div>
+<form method="post" action="/doctor/next">
+<button type="submit" class="btn btn-green">➡️ Next Patient</button>
+</form>
+{% else %}
+<div class="no-patient">
+<p style="font-size:18px; margin-bottom:10px;">Koi patient nahi hai</p>
+<p style="font-size:13px;">Waiting list se next patient bulao</p>
+</div>
+{% if waiting %}
+<form method="post" action="/doctor/next">
+<button type="submit" class="btn btn-green">▶️ First Patient Bulao</button>
+</form>
+{% endif %}
+{% endif %}
+</div>
+
+<!-- MISSED PATIENTS -->
+{% if missed %}
+<div class="section">
+<h3>❌ Missed Patients ({{missed_count}})</h3>
+{% for m in missed %}
+<div class="patient-card missed-card">
+<p class="name">Token #{{m[0]}} - {{m[4]}}</p>
+<p class="meta">{{m[3]}} | Missed: {{m[11].split('.')[0] if m[11] else ''}}</p>
+</div>
+{% endfor %}
+<form method="post" action="/doctor/call_missed">
+<button type="submit" class="btn btn-orange">📢 Missed ko Call Kare</button>
+</form>
+</div>
+{% endif %}
+
+<!-- WAITING LIST -->
+{% if waiting %}
+<div class="section">
+<h3>⏳ Waiting List ({{waiting|length}})</h3>
+{% for w in waiting[:10] %}
+<div class="patient-card">
+<p class="name">Token #{{w[0]}} - {{w[4]}}</p>
+<p class="meta">{{w[3]}} | Time: {{w[10].split(' ')[1][:5] if w[10] else ''}}</p>
+</div>
+{% endfor %}
+</div>
+{% endif %}
+
+<div class="logout">
+<a href="/doctor/logout">🚪 Logout Kare</a>
+</div>
+
+</body>
+</html>
