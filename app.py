@@ -136,7 +136,7 @@ def index():
         disease = request.form['disease']
         opd = OPD_MAP[hospital][disease] # Auto OPD
 
-        patient_name = request.form['patient_name']
+        patient_name = request.form['name']
         address = request.form['address']
         hospital_fee = 20
         service_fee = 10
