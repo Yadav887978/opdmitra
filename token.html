@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Token Book - {{ hospital.name }}</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Arial', sans-serif; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container { 
+            background: white; 
+            padding: 35px; 
+            border-radius: 15px; 
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        h2 { 
+            color: #2c3e50; 
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 26px;
+        }
+        .hospital-info {
+            text-align: center;
+            color: #7f8c8d;
+            font-size: 14px;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #ecf0f1;
+        }
+        label { 
+            display: block; 
+            margin-top: 18px; 
+            font-weight: bold;
+            color: #34495e;
+            font-size: 15px;
+        }
+        input, select { 
+            width: 100%; 
+            padding: 12px; 
+            margin-top: 6px; 
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 15px;
+        }
+        input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        .btn { 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white; 
+            border: none; 
+            padding: 15px; 
+            font-size: 17px; 
+            cursor: pointer; 
+            border-radius: 8px; 
+            margin-top: 25px;
+            width: 100%;
+            font-weight: bold;
+        }
+        .btn:hover { transform: scale(1.02); }
+        
+        .fees-box {
+            background: #e8f4f8;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 8px;
+            font-size: 14px;
+            color: #2c3e50;
+        }
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 15px;
+            color: #667eea;
+            text-decoration: none;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>🏥 Token Booking</h2>
+        <div class="hospital-info">
+            <b>{{ hospital.name }}</b><br>
+            {{ hospital.address }}, {{ hospital.city }}
+        </div>
+        
+        <form method="POST">
+            <label>OPD/Department Select kare:</label>
+            <select name="opd_id" required>
+                <option value="">-- OPD Chune --</option>
+                {% for opd in opds %}
+                <option value="{{ opd.id }}">{{ opd.name }} - Dr. {{ opd.doctor_name }} ({{ opd.timing }})</option>
+                {% endfor %}
+            </select>
+            
+            <label>Token Type:</label>
+            <select name="token_type" id="token_type" required onchange="updateFees()">
+                <option value="Normal">Normal Token</option>
+                <option value="Emergency">Emergency Token</option>
+            </select>
+            
+            <div class="fees-box">
+                <b>Fees:</b> <span id="fees_display">₹50</span>
+                <div style="font-size: 12px; color: #7f8c8d; margin-top: 5px;">
+                    Normal = ₹50 | Emergency = ₹200
+                </div>
+            </div>
+            
+            <label>Patient Ka Naam:</label>
+            <input type="text" name="patient_name" placeholder="Pura naam likhe" required>
+            
+            <label>Patient Ki Age:</label>
+            <input type="number" name="patient_age" placeholder="Age in years" min="1" max="120" required>
+            
+            <button class="btn">✅ Token Generate Kare</button>
+        </form>
+        
+        <a href="{{ url_for('index') }}" class="back-link">← Wapas Dashboard</a>
+    </div>
+    
+    <script>
+        function updateFees() {
+            var type = document.getElementById('token_type').value;
+            var fees = (type == 'Emergency') ? '₹200' : '₹50';
+            document.getElementById('fees_display').innerText = fees;
+        }
+    </script>
+</body>
+</html>
