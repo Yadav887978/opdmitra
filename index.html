@@ -1,132 +1,117 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>OpdMitra - Token Booking</title>
-<style>
-* {margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI', Tahoma, sans-serif;}
-body {background:linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height:100vh; display:flex; align-items:center; justify-content:center; padding:20px;}
-.container {background:white; border-radius:20px; padding:35px; max-width:450px; width:100%; box-shadow:0 20px 60px rgba(0,0,0,0.3);}
-.logo {text-align:center; margin-bottom:25px;}
-.logo h1 {color:#2563eb; font-size:28px; font-weight:700; display:flex; align-items:center; justify-content:center; gap:8px;}
-.logo p {color:#64748b; font-size:13px; margin-top:5px;}
-.form-group {margin-bottom:18px;}
-label {display:block; margin-bottom:6px; font-weight:600; color:#334155; font-size:14px;}
-input, select {width:100%; padding:12px 14px; border:2px solid #e2e8f0; border-radius:10px; font-size:15px; transition:0.3s;}
-input:focus, select:focus {border-color:#2563eb; outline:none; box-shadow:0 0 0 3px rgba(37,99,235,0.1);}
-.fee-box {background:#fef3c7; border-left:4px solid #f59e0b; padding:12px 15px; border-radius:8px; margin:20px 0; font-size:14px;}
-.fee-box b {color:#92400e;}
-.btn {width:100%; padding:14px; background:linear-gradient(135deg, #2563eb 0%, #1e40af 100%); color:white; border:none; border-radius:10px; font-size:16px; font-weight:bold; cursor:pointer; transition:0.3s;}
-.btn:hover {transform:translateY(-2px); box-shadow:0 10px 25px rgba(37,99,235,0.4);}
-.token-slip {border:3px dashed #2563eb; padding:25px; border-radius:15px; margin-top:20px; background:#eff6ff;}
-.token-slip h2 {text-align:center; color:#2563eb; margin-bottom:15px; font-size:22px;}
-.token-no {font-size:52px; font-weight:bold; color:#dc2626; text-align:center; margin:15px 0; letter-spacing:3px;}
-.detail {display:flex; justify-content:space-between; margin:10px 0; font-size:15px; padding:5px 0; border-bottom:1px dashed #cbd5e1;}
-.detail:last-child {border:none;}
-.detail b {color:#1e293b;}
-.qr-box {text-align:center; margin:25px 0; padding:20px; background:#f0fdf4; border-radius:12px; border:2px solid #4ade80;}
-.qr-box img {max-width:220px; border:5px solid #fff; box-shadow:0 4px 15px rgba(0,0,0,0.1);}
-.note {background:#fef3c7; padding:12px; border-radius:8px; margin-top:15px; font-size:13px; color:#92400e; text-align:center; line-height:1.5;}
-.print-btn {background:#10b981; margin-top:15px;}
-.print-btn:hover {background:#059669; box-shadow:0 10px 25px rgba(16,185,129,0.4);}
-.doctor-link {text-align:center; margin-top:15px; font-size:13px;}
-.doctor-link a {color:#2563eb; text-decoration:none; font-weight:600;}
-.doctor-link a:hover {text-decoration:underline;}
-@media print {.no-print {display:none;} body{background:white;}}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OPD Mitra - Patient Registration</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            background-color: #f4f4f4; 
+            margin: 0; 
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container { 
+            max-width: 500px; 
+            width: 100%;
+            background: white; 
+            padding: 30px; 
+            border-radius: 10px; 
+            box-shadow: 0 0 20px rgba(0,0,0,0.1); 
+        }
+        h2 { 
+            text-align: center; 
+            color: #333; 
+            margin-bottom: 30px;
+        }
+        label { 
+            display: block; 
+            margin-bottom: 5px; 
+            font-weight: bold;
+            color: #555;
+        }
+        input, select { 
+            width: 100%; 
+            padding: 12px; 
+            margin-bottom: 20px; 
+            border: 1px solid #ddd; 
+            border-radius: 5px; 
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+        button { 
+            width: 100%; 
+            padding: 15px; 
+            background: #28a745; 
+            color: white; 
+            border: none; 
+            border-radius: 5px; 
+            font-size: 18px;
+            cursor: pointer; 
+        }
+        button:hover { 
+            background: #218838; 
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
-
-<div class="container">
-
-{% if not patient %}
-<!-- TOKEN FORM - Screenshot wala design -->
-<div class="logo">
-    <h1>🏥 OpdMitra</h1>
-    <p>Govt Hospital OPD Token System</p>
-</div>
-
-<form method="post">
-    <div class="form-group">
-        <label>1. Hospital Select Kare *</label>
-        <select name="hospital" id="hospital" required>
-            <option value="">-- Hospital Chuno --</option>
-            {% for h in hospitals %}
-            <option value="{{h}}">{{h}}</option>
-            {% endfor %}
-        </select>
+    <div class="container">
+        <h2>OPD Mitra - Patient Registration</h2>
+        
+        <form method="POST" action="/register">
+            <label>Name:</label>
+            <input type="text" name="patient_name" placeholder="Enter full name" required>
+            
+            <label>Age:</label>
+            <input type="number" name="patient_age" placeholder="Enter age" required>
+            
+            <label>Gender:</label>
+            <select name="patient_gender" required>
+                <option value="">Select Gender</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+            </select>
+            
+            <label>Phone:</label>
+            <input type="tel" name="patient_phone" placeholder="Enter 10 digit mobile number" pattern="[0-9]{10}" required>
+            
+            <label>Disease/Symptoms:</label>
+            <select name="patient_disease" required>
+                <option value="">Select Disease</option>
+                <option value="Fever">Fever</option>
+                <option value="Cold & Cough">Cold & Cough</option>
+                <option value="Headache">Headache</option>
+                <option value="Stomach Pain">Stomach Pain</option>
+                <option value="Body Pain">Body Pain</option>
+                <option value="Diabetes">Diabetes</option>
+                <option value="Blood Pressure">Blood Pressure</option>
+                <option value="Other">Other</option>
+            </select>
+            
+            <label>Hospital:</label>
+            <select name="patient_hospital" required>
+                <option value="">Select Hospital</option>
+                <option value="GT Hospital Mumbai">GT Hospital Mumbai</option>
+                <option value="KEM Hospital">KEM Hospital</option>
+                <option value="JJ Hospital">JJ Hospital</option>
+                <option value="Nair Hospital">Nair Hospital</option>
+            </select>
+            
+            <button type="submit">Generate Token</button>
+        </form>
     </div>
-
-    <div class="form-group">
-        <label>2. Bimari Select Kare *</label>
-        <select name="disease" id="disease" required>
-            <option value="">-- Bimari Chuno --</option>
-            {% for d in diseases %}
-            <option value="{{d}}">{{d}}</option>
-            {% endfor %}
-        </select>
-    </div>
-
-    <div class="form-group">
-        <label>3. Patient Ka Naam *</label>
-        <input type="text" name="patient_name" required placeholder="Pura naam likhe">
-    </div>
-
-    <div class="form-group">
-        <label>4. Address *</label>
-        <input type="text" name="address" required placeholder="Pura address">
-    </div>
-
-    <div class="fee-box">
-        <b>Fee Details:</b><br>
-        Hospital Fee: ₹20<br>
-        Service Fee: ₹10<br>
-        <b>Total: ₹30</b>
-    </div>
-
-    <button type="submit" class="btn">🎫 Token Nikale</button>
-
-    <div class="doctor-link">
-        👨‍⚕️ <a href="/doctor/login">Doctor Login</a>
-    </div>
-</form>
-
-{% else %}
-<!-- TOKEN SLIP + SIRF FEE QR -->
-<div class="token-slip">
-    <h2>🎫 OPD Token Slip</h2>
-
-    <div class="token-no">{{patient[0]}}</div>
-
-    <div class="detail"><span>Patient:</span><b>{{patient[4]}}</b></div>
-    <div class="detail"><span>Hospital:</span><b>{{patient[1]}}</b></div>
-    <div class="detail"><span>OPD:</span><b>{{patient[2]}}</b></div>
-    <div class="detail"><span>Bimari:</span><b>{{patient[3]}}</b></div>
-    <div class="detail"><span>Address:</span><b>{{patient[5]}}</b></div>
-    <div class="detail"><span>Date:</span><b>{{patient[9].split()[0]}}</b></div>
-
-    <!-- SIRF FEE QR - Status QR hata diya -->
-    <div class="qr-box">
-        <p style="font-weight:700; margin-bottom:10px; color:#15803d; font-size:16px;">💳 Fee Payment Kare - ₹30</p>
-        <img src="data:image/png;base64,{{fee_qr}}" alt="UPI QR">
-        <p style="font-size:12px; color:#166534; margin-top:8px;">UPI Scan karke turant payment kare</p>
-    </div>
-
-    <div class="note">
-        ⚠️ Token slip leke OPD counter pe dikhaye.<br>
-        Doctor ke bulane ke baad andar jaye.
-    </div>
-
-    <button onclick="window.print()" class="btn print-btn no-print">🖨️ Print Kare</button>
-    <a href="/" class="btn no-print" style="background:#64748b; text-decoration:none; display:block; text-align:center;">Naya Token</a>
-</div>
-{% endif %}
-
-</div>
-
-<script>
-// Bimari select karte hi OPD auto set ho jayega - backend sambhal lega
-</script>
 </body>
 </html>
